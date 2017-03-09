@@ -41,7 +41,38 @@ typedef struct
 DynamicArray* initArray(int capacity);
 
 
-//
+//Destructor for DynamicArray
+void destroyDynamicArray(DynamicArray** array);
+
+
+//Push element at the end
+void push(DynamicArray* array, Element e);
+
+
+//Getter for current length
+int getLength(DynamicArray* array);
+
+
+//Getter for current capacity
+int getCapacity(DynamicArray* array);
+
+
+//Resize the capacity of vector
+void resize(DynamicArray* array);
+
+
+//Getter for element
+Element getElement(DynamicArray* array, int index);
+
+
+//Swapper for two elements
+void swap(DynamicArray* array, int first, int second);
+
+
+//Sort function
+void sort(DynamicArray* array, compElement function, int direction);
+
+
 
 #endif //WORLDPOPULATIONMONITORING_DYNAMICCONTAINER_H
 
