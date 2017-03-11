@@ -18,7 +18,7 @@
 //Continent enum
 typedef enum
 {
-    Europe, Asia, America, Australia, Africa
+    Dummy, Europe, Asia, America, Australia, Africa
 } Continent;
 
 

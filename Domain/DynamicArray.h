@@ -37,12 +37,13 @@ typedef struct
 } DynamicArray;
 
 
+
 //Constructor for DynamicArray
 DynamicArray* initArray(int capacity);
 
 
 //Destructor for DynamicArray
-void destroyDynamicArray(DynamicArray** array);
+void destroyArray(DynamicArray **array);
 
 
 //Push element at the end
