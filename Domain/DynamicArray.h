@@ -21,7 +21,7 @@ typedef Country Element;
 typedef Element (*makeElement)(char name[], Continent cont, int population);
 
 
-//Function for comparation between elements
+//Function for comparison between elements
 typedef int (*compElement)(Element* first, Element* second);
 
 

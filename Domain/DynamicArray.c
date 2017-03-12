@@ -17,7 +17,7 @@ DynamicArray *initArray(int capacity)
         array->length = 0;
         array->elements = (Element *) malloc(capacity * sizeof(Element));
 
-        if(array->elements = NULL)
+        if(array->elements == NULL)
             return NULL;
         return array;
     }
