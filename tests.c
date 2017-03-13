@@ -13,12 +13,12 @@ void performTests()
     if(flag_country)
     {
         printf("Tests performed, no malfunction\nPress any key to continue\n");
-        system("pause>nul");
+        getch();
     }
     else
     {
         printf("Tests found malfunctions!\nProcess will now terminate\n");
-        system("pause>nul");
+        getch();
         exit(1);
     }
 

@@ -4,9 +4,9 @@
 #include "Controller/Controller.h"
 #include "UI/console.h"
 
-int main() {
-    printf("Hello, World!\n");
-    //performTests();
+int main()
+{
+    performTests();
     Repo* repo = initRepo();
     Controller controller = initController(repo);
     UI* ui = initUI(&controller);
