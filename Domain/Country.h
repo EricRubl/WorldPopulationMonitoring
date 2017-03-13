@@ -35,8 +35,6 @@ typedef struct
 //////////////////////////////////////////////////////////
 
 //Country constructor
-//Input: name, continent, population
-//Output: Country object
 Country newCountry(char name[], Continent cont, int population);
 
 
@@ -53,11 +51,11 @@ int getPopulation(Country* country);
 
 
 //Continent string generator
-char* ContinentToString(Continent cont, char continent_string[]);
+char* continentToString(Continent cont, char continent_string[]);
 
 
 //Country "str method" for printing inm the UI
-void strCountry(Country* country, char country_string[]);
+void countryToString(Country* country, char country_string[]);
 
 
 //Compare function for country population

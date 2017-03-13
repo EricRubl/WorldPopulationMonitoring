@@ -13,76 +13,75 @@ Controller initController(Repo *repo)
 }
 
 
-char* searchCountries(Controller *controller, char subs[])
+char* ControllerSearchCountries(Controller *controller, char subs[])
 {
     int i, len = 0;
-    DynamicArray *c = getItemsBySubstring(controller->countryRepo, subs);
-    if(c == NULL)
+    DynamicArray *found = RepoSearchCountry(controller->countryRepo, subs);
+    if(found == NULL)
         return NULL;
-    len = getLength(c);
+    len = getLength(found);
 
-    int buffer = len * STRING_LENGTH;
+    int buffer = len * 20;
     char* format = (char*) malloc(buffer * sizeof(char));
     format[0] = 0;
     for(i = 0; i < len; i++)
     {
-        Country ctr = getElement(c, i);
+        Country ctr = getElement(found, i);
         char re[20];
-        strCountry(&ctr, re);
+        countryToString(&ctr, re);
         strcat(format, re);
     }
     return format;
 }
 
 
-char *continentCountries(Controller *controller, Continent continent)
+char *ControllerGetContinent(Controller *controller, Continent continent)
 {
+
     int i, len = 0;
-    DynamicArray *c = getItemsByContinent(controller->countryRepo, continent);
+    DynamicArray *c = RepoGetContinent(controller->countryRepo, continent);
     if(c == NULL)
         return NULL;
     len = getLength(c);
 
-    int buffer = 2 * len + len * STRING_LENGTH * (sizeof(char));
-    char *format = (char *) malloc(2 * len + len * STRING_LENGTH * (sizeof(char)));
-    memset(format, 1, 2 * len + len * STRING_LENGTH * (sizeof(char)));
-    format[buffer - 1] = 0;
+    int buffer = len * 20;
+    char* format = (char*)malloc(buffer * sizeof(char));
+    format[0] = 0;
     for(i = 0; i < len; i++)
     {
         Country ctr = getElement(c, i);
         char re[STRING_LENGTH];
-        strCountry(&ctr, re);
-        strcat(re, "\n");
+        countryToString(&ctr, re);
         strcat(format, re);
     }
     return format;
 }
 
 
-int addCountry(Controller *controller, Country c)
+int ControllerAddCountry(Controller *controller, Country c)
 {
-    return addItem(controller->countryRepo, c);
+    return RepoAddCountry(controller->countryRepo, c);
 }
 
 
-int deleteCountry(Controller *controller, Country c)
+int ControllerDeleteCountry(Controller *controller, char name[])
 {
-    return deleteItem(controller->countryRepo, c);
+    return RepoDeleteCountryByName(controller->countryRepo, name);
 }
 
 
-int modifyCountry(Controller *controller, Country c, Country newc)
+int ControllerUpdateCountry(Controller *controller, Country c, Country newc)
 {
-    return updateCountry(controller->countryRepo, c, newc);
+    return RepoUpdateCountry(controller->countryRepo, c, newc);
 }
 
 
-int checkCountry(Controller *controller, Country c)
+int ControllerCheckCountry(Controller *controller, Country c)
 {
-    int i, len = getRepoLength(controller->countryRepo);
-    for(i = 0; i < len; i++)
+    int i;
+    for(i = 0; i < RepoGetLength(controller->countryRepo); i++)
     {
-        Country ctr = getItem(controller->countryRepo, i);
+        Country ctr = RepoGetCountry(controller->countryRepo, i);
         if(comparePopulation(&ctr, &c) == 0)
             return 1;
     }
@@ -90,21 +89,33 @@ int checkCountry(Controller *controller, Country c)
 }
 
 
-int migratePopulation(Controller *controller, Country source, Country destination, int val)
+Country ControllerCountryFromName(Controller* controller, char name[])
 {
-    if(!(checkCountry(controller, source) && checkCountry(controller, destination)))
+    Country ret = newCountry("", Dummy, -1);
+
+    int pos = RepoGetPosition(controller->countryRepo, name);
+    if(pos == -1)
+        return ret;
+
+    return RepoGetCountry(controller->countryRepo, pos);
+}
+
+
+int ControllerMigratePopulation(Controller *controller, Country source, Country destination, int val)
+{
+    if(!(ControllerCheckCountry(controller, source) && ControllerCheckCountry(controller, destination)))
         return 0;
 
-    int pops = getPopulation(&source);
-    int popd = getPopulation(&destination);
+    int pop_s = getPopulation(&source);
+    int pop_d = getPopulation(&destination);
 
-    if(val > pops)
+    if(val > pop_s)
         return 0;
 
-    Country new_source = newCountry(getName(&source), getContinent(&source), pops - val);
-    Country new_destination = newCountry(getName(&destination), getContinent(&destination), popd + val);
-    modifyCountry(controller, source, new_source);
-    modifyCountry(controller, destination, new_destination);
+    Country new_source = newCountry(getName(&source), getContinent(&source), pop_s - val);
+    Country new_destination = newCountry(getName(&destination), getContinent(&destination), pop_d + val);
+    ControllerUpdateCountry(controller, source, new_source);
+    ControllerUpdateCountry(controller, destination, new_destination);
 
     return 1;
 }

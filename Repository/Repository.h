@@ -24,51 +24,47 @@ void destroyRepo(Repo **repo);
 
 
 //Add item to repo
-int addItem(Repo *repo, Country c);
+int RepoAddCountry(Repo *repo, Country c);
 
 
 //Getter for length
-int getRepoLength(Repo *repo);
+int RepoGetLength(Repo *repo);
 
 
 //Getter for position
-int getRepoPosition(Repo *repo, char name[]);
+int RepoGetPosition(Repo *repo, char name[]);
 
 
 //Getter for item
-Country getItem(Repo *repo, int index);
+Country RepoGetCountry(Repo *repo, int index);
 
 
 //Delete by name
-int deleteByName(Repo *repo, char name[]);
+int RepoDeleteCountryByName(Repo *repo, char name[]);
 
 
 //Update by index
-int updateByIndex(Repo *repo, Country c, int index);
+int RepoUpdateCountryByIndex(Repo *repo, Country c, int index);
 
 
 //Search item by substring
-DynamicArray *getItemsBySubstring(Repo *repo, char *subs);
+DynamicArray *RepoSearchCountry(Repo *repo, char *subs);
 
 
 //Get items by continent
-DynamicArray *getItemsByContinent(Repo *repo, Continent continent);
+DynamicArray *RepoGetContinent(Repo *repo, Continent continent);
 
 
 //Getter for repo capacity
-int getRepoCapacity(Repo *repo);
+int RepoGetCapacity(Repo *repo);
 
 
 //Delete item
-int deleteItem(Repo *repo, Country c);
+int RepoDeleteCountry(Repo *repo, Country c);
 
 
 //Update country
-int updateCountry(Repo *repo, Country c, Country newc);
-
-
-//Clear repo
-void clearRepo(Repo *repo);
+int RepoUpdateCountry(Repo *repo, Country c, Country newc);
 
 
 #endif //WORLDPOPULATIONMONITORING_REPOSITORY_H

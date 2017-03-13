@@ -35,7 +35,7 @@ int getPopulation(Country* country)
 }
 
 
-char* ContinentToString(Continent cont, char continent_string[])
+char* continentToString(Continent cont, char continent_string[])
 {
     char sEurope[] = {"Europe"};
     char sAsia[] = {"Asia"};
@@ -67,13 +67,13 @@ char* ContinentToString(Continent cont, char continent_string[])
     }
 }
 
-void strCountry(Country* country, char country_string[])
+void countryToString(Country* country, char country_string[])
 {
-    char cont[STRING_LENGTH];
+    char cont[20];
     char* cName = getName(country);
     Continent cContinent = getContinent(country);
     int cPopulation = getPopulation(country);
-    char* contString = ContinentToString(cContinent, cont);
+    char* contString = continentToString(cContinent, cont);
     sprintf(country_string, "%s | %s | %d\n", cName, contString, cPopulation);
 }
 

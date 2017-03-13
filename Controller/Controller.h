@@ -11,7 +11,6 @@
 typedef struct
 {
     Repo *countryRepo;
-
 } Controller;
 
 
@@ -20,31 +19,35 @@ Controller initController(Repo *repo);
 
 
 //Search countries
-char* searchCountries(Controller *controller, char subs[]);
+char* ControllerSearchCountries(Controller *controller, char subs[]);
 
 
 //Get by continent
-char *continentCountries(Controller *controller, Continent continent);
+char *ControllerGetContinent(Controller *controller, Continent continent);
 
 
 //Add new country
-int addCountry(Controller *controller, Country c);
+int ControllerAddCountry(Controller *controller, Country c);
 
 
 //Delete a country
-int deleteCountry(Controller *controller, Country c);
+int ControllerDeleteCountry(Controller *controller, char name[]);
 
 
 //Update a country
-int modifyCountry(Controller *controller, Country c, Country newc);
+int ControllerUpdateCountry(Controller *controller, Country c, Country newc);
 
 
 //Check if a country exists
-int checkCountry(Controller *controller, Country c);
+int ControllerCheckCountry(Controller *controller, Country c);
+
+
+//Get country object from corresponding name
+Country ControllerCountryFromName(Controller* controller, char name[]);
 
 
 //Migrate population
-int migratePopulation(Controller *controller, Country source, Country destination, int val);
+int ControllerMigratePopulation(Controller *controller, Country source, Country destination, int val);
 
 
 #endif //WORLDPOPULATIONMONITORING_CONTROLLER_H

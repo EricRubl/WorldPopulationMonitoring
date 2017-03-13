@@ -32,12 +32,12 @@ int testCountry()
     if(strcmp(getName(&test_country), "Austria") != 0 || getContinent(&test_country) != Europe || getPopulation(&test_country) != 9)
         return 0;
 
-    char cont_str[STRING_LENGTH];
-    if(strcmp(ContinentToString(getContinent(&test_country), cont_str), "Austria") != 0)
+    char cont_str[20];
+    if(strcmp(continentToString(getContinent(&test_country), cont_str), "Europe") != 0)
         return 0;
 
     char c_string[STRING_LENGTH];
-    strCountry(&test_country, c_string);
+    countryToString(&test_country, c_string);
     if(strcmp(c_string, "Austria | Europe | 9\n") != 0)
         return 0;
 

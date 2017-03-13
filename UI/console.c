@@ -38,7 +38,7 @@ void printMenu()
 }
 
 
-void listMenu()
+void listCountriesMenu()
 {
     system("cls");
     printf("1 | Search by name\n");
@@ -47,7 +47,7 @@ void listMenu()
 }
 
 
-void updateMenu()
+void updateCountryMenu()
 {
     system("cls");
     printf("1 | Change name\n");
@@ -55,6 +55,27 @@ void updateMenu()
     printf("3 | Change population\n");
     printf("4 | Migrate population\n");
     printf("0 | Back to menu\n\n");
+}
+
+
+int readInteger(char* msg)
+{
+    char s[20];
+    int ret = 0;
+
+    while (1)
+    {
+        printf(msg);
+        scanf("%s", s);
+        int result = sscanf(s, "%d", &ret);
+        if(result == 0)
+        {
+            printf("Please insert integer!\n");
+        }
+        else
+            break;
+    }
+    return ret;
 }
 
 
@@ -70,7 +91,7 @@ int readCommand(char* msg)
         int result = sscanf(s, "%d", &ret);
         if(result == 0)
         {
-            printf("Insert valid Command!\n");
+            printf("Invalid option!\n");
         }
         else
             break;
@@ -82,7 +103,6 @@ int readCommand(char* msg)
 Continent readContinent(char* msg)
 {
     char s[20];
-    Continent ret = Dummy;
 
     while (1)
     {
@@ -92,11 +112,11 @@ Continent readContinent(char* msg)
         char *cts;
         int i;
         for (i = 0; i <= 5; i++) {
-            cts = ContinentToString(i, aux);
+            cts = continentToString(i, aux);
             if (strcmp(s, cts) == 0)
                 return i;
         }
-        printf("Invalid content!\n");
+        printf("Invalid continent!\n");
     }
 }
 
@@ -114,11 +134,11 @@ Country readCountry()
 }
 
 
-void UIlistCountries(Controller* controller)
+void UIListCountries(Controller* controller)
 {
     while(1)
     {
-        listMenu();
+        listCountriesMenu();
         int user_input = readCommand("");
         switch (user_input)
         {
@@ -127,10 +147,11 @@ void UIlistCountries(Controller* controller)
             case 1:
             {
                 system("cls");
-                printf("Search tag: ");
+                printf("Keyword: ");
                 char s[20];
-                scanf("%s", s);
-                char* out = searchCountries(controller, s);
+                getc(stdin);
+                fgets(s, 20, stdin);
+                char* out = ControllerSearchCountries(controller, s);
                 if(out == NULL)
                 {
                     printf("\n\nNo matches found!");
@@ -146,32 +167,34 @@ void UIlistCountries(Controller* controller)
             }
             case 2:
             {
+                system("cls");
                 Continent cont = readContinent("Continent: ");
-                char* out = continentCountries(controller, cont);
+                char* out = ControllerGetContinent(controller, cont);
                 if(out == NULL)
                 {
-                    printf("\n\nInsert valid continent!");
+                    printf("\n\nContinent empty!");
                     getch();
                 }
                 else
                 {
                     system("cls");
                     printf(out);
+                    getch();
                 }
                 break;
             }
             default:
                 printf("Invalid option!");
-
         }
     }
 }
 
 
-void UIaddCountry(Controller* controller)
+void UIAddCountry(Controller* controller)
 {
+    system("cls");
     Country c = readCountry();
-    int check = addCountry(controller, c);
+    int check = ControllerAddCountry(controller, c);
     if(check)
     {
         printf("\n\n%s added", getName(&c));
@@ -179,34 +202,40 @@ void UIaddCountry(Controller* controller)
     }
     else
     {
-        printf("\n\nError adding %s", getName(&c));
+        printf("\n\n%s already exsists", getName(&c));
         getch();
     }
 }
 
 
-void UIdeleteCountry(Controller* controller)
+void UIDeleteCountry(Controller* controller)
 {
-    Country c = readCountry();
-    int check = deleteCountry(controller, c);
-    if(check == 0)
+    system("cls");
+    printf("Country: ");
+    char s[20];
+    scanf("%s", s);
+    int check = ControllerDeleteCountry(controller, s);
+    if(check == -1)
     {
-        printf("\n\n%s not found", getName(&c));
+        printf("\n\n%s not found", s);
         getch();
     }
     else
     {
-        printf("\n\n%s deleted", getName(&c));
+        printf("\n\n%s deleted", s);
         getch();
     }
 }
 
 
-void UImodifyCountry(Controller* controller)
+void UIUpdateCountry(Controller* controller)
 {
+    system("cls");
     printf("Country: ");
-    Country c = readCountry();
-    int check = checkCountry(controller, c);
+    char s[20];
+    scanf("%s", s);
+    Country c = ControllerCountryFromName(controller, s);
+    int check = ControllerCheckCountry(controller, c);
     if(!check)
     {
         printf("\n\nInvalid country!");
@@ -216,7 +245,7 @@ void UImodifyCountry(Controller* controller)
 
     while (1)
     {
-        updateMenu();
+        updateCountryMenu();
         int user_input = readCommand("");
 
         switch (user_input)
@@ -226,32 +255,41 @@ void UImodifyCountry(Controller* controller)
             case 1:
             {
                 printf("New name: ");
-                char s[20];
-                scanf("%s", s);
-                Country cc = newCountry(s, getContinent(&c), getPopulation(&c));
-                modifyCountry(controller, c, cc);
+                char ss[20];
+                scanf("%s", ss);
+                Country cc = newCountry(ss, getContinent(&c), getPopulation(&c));
+                ControllerUpdateCountry(controller, c, cc);
                 break;
             }
             case 2:
             {
                 Continent cont = readContinent("New continent: ");
                 Country cc = newCountry(getName(&c), cont, getPopulation(&c));
-                modifyCountry(controller, c, cc);
+                ControllerUpdateCountry(controller, c, cc);
                 break;
             }
             case 3:
             {
-                int pop = readCommand("New population: ");
+                int pop = readInteger("New population: ");
                 Country cc = newCountry(getName(&c), getContinent(&c), pop);
-                modifyCountry(controller, c, cc);
+                ControllerUpdateCountry(controller, c, cc);
                 break;
             }
             case 4:
             {
-                int migration = readCommand("Migration: ");
-                printf("\nEmigrant country: ");
-                Country emi = readCountry();
-                if(!migratePopulation(controller, c, emi, migration))
+                int migration = readInteger("Migration: ");
+                printf("Emigrant country: ");
+                char ss[20];
+                scanf("%s", ss);
+                Country emi = ControllerCountryFromName(controller, s);
+                int checkk = ControllerCheckCountry(controller, emi);
+                if(!checkk)
+                {
+                    printf("\nInvalid country!");
+                    getch();
+                    break;
+                }
+                if(!ControllerMigratePopulation(controller, c, emi, migration))
                 {
                     printf("\n\nNot enough emigrants!");
                     getch();
@@ -281,16 +319,16 @@ void launchUI(UI* ui)
             case 0:
                 return;
             case 1:
-                UIlistCountries(ui->controller);
+                UIListCountries(ui->controller);
                 break;
             case 2:
-                UIaddCountry(ui->controller);
+                UIAddCountry(ui->controller);
                 break;
             case 3:
-                UIdeleteCountry(ui->controller);
+                UIDeleteCountry(ui->controller);
                 break;
             case 4:
-                UImodifyCountry(ui->controller);
+                UIUpdateCountry(ui->controller);
                 break;
             default:
                 printf("Invalid option!");

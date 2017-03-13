@@ -20,46 +20,43 @@ void destroyRepo(Repo **repo)
     if(repo == NULL)
         return;
 
-    DynamicArray *countries = (*repo)->countries;
-    destroyArray(&countries);
+    destroyArray(&(*repo)->countries);
     free(*repo);
     *repo = NULL;
 }
 
 
-int addItem(Repo *repo, Country c)
+int RepoAddCountry(Repo *repo, Country c)
 {
     if(repo == NULL)
         return -1;
 
-    if(getRepoPosition(repo, getName(&c)) >= 0)
+    if(RepoGetPosition(repo, getName(&c)) >= 0)
         return 0;
 
-    DynamicArray *countries = repo->countries;
-    push(countries, c);
+    push(repo->countries, c);
     return 1;
 }
 
 
-int getRepoLength(Repo *repo)
+int RepoGetLength(Repo *repo)
 {
     if(repo == NULL)
         return -1;
 
-    DynamicArray *countries = repo->countries;
-    return getLength(countries);
+    return getLength(repo->countries);
 }
 
 
-int getRepoPosition(Repo *repo, char name[])
+int RepoGetPosition(Repo *repo, char name[])
 {
     if(repo == NULL)
         return -1;
 
     int i;
-    for(i = 0; i < getRepoLength(repo); i++)
+    for(i = 0; i < RepoGetLength(repo); i++)
     {
-        Country c = getItem(repo, i);
+        Country c = RepoGetCountry(repo, i);
         if(strcmp(getName(&c), name) == 0)
             return i;
     }
@@ -67,37 +64,35 @@ int getRepoPosition(Repo *repo, char name[])
 }
 
 
-Country getItem(Repo *repo, int index)
+Country RepoGetCountry(Repo *repo, int index)
 {
-    if(repo == NULL || index < 0 || index > getLength(repo->countries))
+    if(repo == NULL || index < 0 || index > RepoGetLength(repo))
         return newCountry("", Dummy, -1);
 
     return getElement(repo->countries, index);
 }
 
 
-int deleteByName(Repo *repo, char name[])
+int RepoDeleteCountryByName(Repo *repo, char name[])
 {
     if(repo == NULL)
         return -1;
 
-    int pos = getRepoPosition(repo, name);
+    int pos = RepoGetPosition(repo, name);
     if(pos == -1)
         return -1;
 
-    int newCapacity = getCapacity(repo->countries);
-    int oldLength = getLength(repo->countries);
+    int newCapacity = RepoGetCapacity(repo);
+    int oldLength = RepoGetLength(repo);
     if((oldLength < newCapacity - 1) && newCapacity > 0)
         newCapacity--;
 
     DynamicArray *newElements = initArray(newCapacity);
     int i;
     for(i = 0; i < oldLength; i++)
-    {
         if(i != pos)
-            push(newElements, getItem(repo, i));
+            push(newElements, RepoGetCountry(repo, i));
 
-    }
 
     DynamicArray *oldElements = repo->countries;
     repo->countries = newElements;
@@ -107,21 +102,21 @@ int deleteByName(Repo *repo, char name[])
 }
 
 
-int updateByIndex(Repo *repo, Country c, int index)
+int RepoUpdateCountryByIndex(Repo *repo, Country c, int index)
 {
     if(repo == NULL)
         return -1;
 
-    if(index < 0 || index > getRepoLength(repo) - 1)
+    if(index < 0 || index > RepoGetLength(repo) - 1)
         return 0;
 
-    DynamicArray *newElements = initArray(getCapacity(repo->countries));
-    int i, len = getCapacity(repo->countries);
-    for(i = 0; i < len; i++)
+    DynamicArray *newElements = initArray(RepoGetCapacity(repo));
+    int i;
+    for(i = 0; i < RepoGetLength(repo); i++)
         if(i == index)
             push(newElements, c);
         else
-            push(newElements, getItem(repo, i));
+            push(newElements, RepoGetCountry(repo, i));
 
     DynamicArray *oldElements = repo->countries;
     repo->countries = newElements;
@@ -131,7 +126,7 @@ int updateByIndex(Repo *repo, Country c, int index)
 }
 
 
-DynamicArray *getItemsBySubstring(Repo *repo, char *subs)
+DynamicArray *RepoSearchCountry(Repo *repo, char *subs)
 {
     char *pos;
     if((pos = strchr(subs, '\n')) != NULL)
@@ -139,22 +134,23 @@ DynamicArray *getItemsBySubstring(Repo *repo, char *subs)
 
     if(strcmp(subs, "") == 0)
     {
-        DynamicArray *allCoubntries = initArray(getCapacity(repo->countries));
-        int i, len = getRepoLength(repo);
-        if(len == 0)
+        DynamicArray *allCountries = initArray(RepoGetCapacity(repo));
+        int i;
+        if(RepoGetLength(repo) == 0)
         {
-            destroyArray(&allCoubntries);
+            destroyArray(&allCountries);
             return NULL;
         }
-        for(int i = 0; i < len; ++i)
-            push(allCoubntries, getItem(repo, i));
-        return allCoubntries;
+        for(i = 0; i < RepoGetLength(repo); ++i)
+            push(allCountries, RepoGetCountry(repo, i));
+        sort(allCountries, comparePopulation, -1);
+        return allCountries;
     }
 
-    int occ = 0, i, len = getRepoLength(repo);
-    for(i = 0; i < len; ++i)
+    int occ = 0, i;
+    for(i = 0; i < RepoGetLength(repo); ++i)
     {
-        Country c = getItem(repo, i);
+        Country c = RepoGetCountry(repo, i);
         if(strstr(getName(&c), subs) != NULL)
             occ++;
     }
@@ -163,9 +159,9 @@ DynamicArray *getItemsBySubstring(Repo *repo, char *subs)
         return NULL;
 
     DynamicArray *foundElements = initArray(occ);
-    for(i = 0; i < len; ++i)
+    for(i = 0; i < RepoGetLength(repo); ++i)
     {
-        Country c = getItem(repo, i);
+        Country c = RepoGetCountry(repo, i);
         if(strstr(getName(&c), subs) != NULL)
             push(foundElements, c);
     }
@@ -174,15 +170,15 @@ DynamicArray *getItemsBySubstring(Repo *repo, char *subs)
 }
 
 
-DynamicArray *getItemsByContinent(Repo *repo, Continent continent)
+DynamicArray *RepoGetContinent(Repo *repo, Continent continent)
 {
     if(continent == Dummy)
         return NULL;
 
-    int occ = 0, i, len = getRepoLength(repo);
-    for(i = 0; i < len; ++i)
+    int occ = 0, i;
+    for(i = 0; i < RepoGetLength(repo); ++i)
     {
-        Country c = getItem(repo, i);
+        Country c = RepoGetCountry(repo, i);
         if(getContinent(&c) == continent)
             occ++;
     }
@@ -191,31 +187,30 @@ DynamicArray *getItemsByContinent(Repo *repo, Continent continent)
         return NULL;
 
     DynamicArray *foundElements = initArray(occ);
-    for(i = 0; i < len; ++i)
+    for(i = 0; i < RepoGetLength(repo); ++i)
     {
-        Country c = getItem(repo, i);
+        Country c = RepoGetCountry(repo, i);
         if(getContinent(&c) == continent)
             push(foundElements, c);
     }
 
     return foundElements;
-
 }
 
 
-int getRepoCapacity(Repo *repo)
+int RepoGetCapacity(Repo *repo)
 {
     return repo->countries->capacity;
 }
 
 
-int deleteItem(Repo *repo, Country c)
+int RepoDeleteCountry(Repo *repo, Country c)
 {
-    int i, len = getRepoLength(repo), removeIndex = -1;
+    int i, len = RepoGetLength(repo), removeIndex = -1;
 
     for(i = 0; i < len; ++i)
     {
-        Country curr = getItem(repo, i);
+        Country curr = RepoGetCountry(repo, i);
 
         if(comparePopulation(&curr, &c) == 0)
         {
@@ -227,7 +222,7 @@ int deleteItem(Repo *repo, Country c)
     if(removeIndex == -1)
         return 0;
 
-    DynamicArray *newElements = initArray(getRepoCapacity(repo));
+    DynamicArray *newElements = initArray(RepoGetCapacity(repo));
 
     for(i = 0; i < len; ++i)
     {
@@ -235,7 +230,7 @@ int deleteItem(Repo *repo, Country c)
             continue;
         else
         {
-            push(newElements, getElement(repo->countries, i));
+            push(newElements, RepoGetCountry(repo, i));
         }
     }
 
@@ -248,12 +243,12 @@ int deleteItem(Repo *repo, Country c)
     return 1;
 }
 
-int updateCountry(Repo *repo, Country c, Country newc)
+int RepoUpdateCountry(Repo *repo, Country c, Country newc)
 {
-    int i, len = getRepoLength(repo), countryIndex = -1;
-    for(i = 0; i < len; ++i)
+    int i, countryIndex = -1;
+    for(i = 0; i < RepoGetLength(repo); ++i)
     {
-        Country curr = getItem(repo, i);
+        Country curr = RepoGetCountry(repo, i);
         if(comparePopulation(&c, &curr) == 0)
         {
             countryIndex = i;
@@ -264,16 +259,8 @@ int updateCountry(Repo *repo, Country c, Country newc)
     if(countryIndex == -1)
         return 0;
 
-    deleteItem(repo, c);
-    addItem(repo, newc);
+    RepoDeleteCountry(repo, c);
+    RepoAddCountry(repo, newc);
 
     return 1;
-}
-
-
-void clearRepo(Repo *repo)
-{
-    int oldcapacity = getRepoCapacity(repo);
-    destroyArray(&repo->countries);
-    repo->countries = initArray(oldcapacity);
 }

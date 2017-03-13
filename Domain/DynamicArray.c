@@ -85,11 +85,11 @@ void resize(DynamicArray *array)
 
 Element getElement(DynamicArray *array, int index)
 {
-    makeElement new = newCountry;
+    makeElement create = newCountry;
 
     if(index > array->length)
     {
-        Element dummy = new("", Dummy, -1);
+        Element dummy = create("", Dummy, -1);
         return dummy;
     }
 
