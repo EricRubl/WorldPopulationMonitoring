@@ -102,30 +102,6 @@ int RepoDeleteCountryByName(Repo *repo, char name[])
 }
 
 
-int RepoUpdateCountryByIndex(Repo *repo, Country c, int index)
-{
-    if(repo == NULL)
-        return -1;
-
-    if(index < 0 || index > RepoGetLength(repo) - 1)
-        return 0;
-
-    DynamicArray *newElements = initArray(RepoGetCapacity(repo));
-    int i;
-    for(i = 0; i < RepoGetLength(repo); i++)
-        if(i == index)
-            push(newElements, c);
-        else
-            push(newElements, RepoGetCountry(repo, i));
-
-    DynamicArray *oldElements = repo->countries;
-    repo->countries = newElements;
-    destroyArray(&oldElements);
-
-    return 1;
-}
-
-
 DynamicArray *RepoSearchCountry(Repo *repo, char *subs)
 {
     char *pos;
@@ -200,7 +176,7 @@ DynamicArray *RepoGetContinent(Repo *repo, Continent continent)
 
 int RepoGetCapacity(Repo *repo)
 {
-    return repo->countries->capacity;
+    return getCapacity(repo->countries);
 }
 
 

@@ -43,10 +43,6 @@ Country RepoGetCountry(Repo *repo, int index);
 int RepoDeleteCountryByName(Repo *repo, char name[]);
 
 
-//Update by index
-int RepoUpdateCountryByIndex(Repo *repo, Country c, int index);
-
-
 //Search item by substring
 DynamicArray *RepoSearchCountry(Repo *repo, char *subs);
 
