@@ -13,7 +13,7 @@ Controller initController(Repo *repo)
 }
 
 
-char *searchCountries(Controller *controller, char subs[])
+char* searchCountries(Controller *controller, char subs[])
 {
     int i, len = 0;
     DynamicArray *c = getItemsBySubstring(controller->countryRepo, subs);
@@ -21,16 +21,14 @@ char *searchCountries(Controller *controller, char subs[])
         return NULL;
     len = getLength(c);
 
-    int buffer = 2 * len + len * STRING_LENGTH * (sizeof(char));
-    char *format = (char *) malloc(2 * len + len * STRING_LENGTH * (sizeof(char)));
-    memset(format, 1, 2 * len + len * STRING_LENGTH * (sizeof(char)));
-    format[buffer - 1] = 0;
+    int buffer = len * STRING_LENGTH;
+    char* format = (char*) malloc(buffer * sizeof(char));
+    format[0] = 0;
     for(i = 0; i < len; i++)
     {
         Country ctr = getElement(c, i);
-        char re[STRING_LENGTH];
+        char re[20];
         strCountry(&ctr, re);
-        strcat(re, "\n");
         strcat(format, re);
     }
     return format;

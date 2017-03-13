@@ -20,7 +20,7 @@ Controller initController(Repo *repo);
 
 
 //Search countries
-char *searchCountries(Controller *controller, char subs[]);
+char* searchCountries(Controller *controller, char subs[]);
 
 
 //Get by continent

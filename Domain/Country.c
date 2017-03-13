@@ -74,7 +74,7 @@ void strCountry(Country* country, char country_string[])
     Continent cContinent = getContinent(country);
     int cPopulation = getPopulation(country);
     char* contString = ContinentToString(cContinent, cont);
-    printf(country_string, "%s | %s | &d\n", cName, contString, cPopulation);
+    sprintf(country_string, "%s | %s | %d\n", cName, contString, cPopulation);
 }
 
 int comparePopulation(Country* first, Country* second)
