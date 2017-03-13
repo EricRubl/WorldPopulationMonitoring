@@ -23,7 +23,7 @@ char* ControllerSearchCountries(Controller *controller, char subs[]);
 
 
 //Get by continent
-char *ControllerGetContinent(Controller *controller, Continent continent);
+char *ControllerGetContinent(Controller *controller, Continent continent, int val);
 
 
 //Add new country

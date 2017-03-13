@@ -110,7 +110,7 @@ DynamicArray *RepoSearchCountry(Repo *repo, char *subs)
 
     if(strcmp(subs, "") == 0)
     {
-        DynamicArray *allCountries = initArray(RepoGetCapacity(repo));
+        DynamicArray *allCountries = initArray(RepoGetLength(repo));
         int i;
         if(RepoGetLength(repo) == 0)
         {
@@ -119,7 +119,6 @@ DynamicArray *RepoSearchCountry(Repo *repo, char *subs)
         }
         for(i = 0; i < RepoGetLength(repo); ++i)
             push(allCountries, RepoGetCountry(repo, i));
-        sort(allCountries, comparePopulation, -1);
         return allCountries;
     }
 
@@ -146,16 +145,39 @@ DynamicArray *RepoSearchCountry(Repo *repo, char *subs)
 }
 
 
-DynamicArray *RepoGetContinent(Repo *repo, Continent continent)
+DynamicArray *RepoGetContinent(Repo *repo, Continent continent, int val)
 {
-    if(continent == Dummy)
-        return NULL;
-
     int occ = 0, i;
+
+    if(continent == Dummy)
+    {
+        for(i = 0; i < RepoGetLength(repo); ++i)
+        {
+            Country c = RepoGetCountry(repo, i);
+            if(getPopulation(&c) > val)
+                occ++;
+        }
+
+        if(occ == 0)
+            return NULL;
+
+        DynamicArray *foundElements = initArray(occ);
+        for(i = 0; i < RepoGetLength(repo); ++i)
+        {
+            Country c = RepoGetCountry(repo, i);
+            if(getPopulation(&c) > val)
+                push(foundElements, c);
+        }
+
+        sort(foundElements, comparePopulation, -1);
+        return foundElements;
+    }
+
+
     for(i = 0; i < RepoGetLength(repo); ++i)
     {
         Country c = RepoGetCountry(repo, i);
-        if(getContinent(&c) == continent)
+        if(getContinent(&c) == continent && getPopulation(&c) > val)
             occ++;
     }
 
@@ -166,10 +188,11 @@ DynamicArray *RepoGetContinent(Repo *repo, Continent continent)
     for(i = 0; i < RepoGetLength(repo); ++i)
     {
         Country c = RepoGetCountry(repo, i);
-        if(getContinent(&c) == continent)
+        if(getContinent(&c) == continent && getPopulation(&c) > val)
             push(foundElements, c);
     }
 
+    sort(foundElements, comparePopulation, -1);
     return foundElements;
 }
 

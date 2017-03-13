@@ -108,10 +108,13 @@ Continent readContinent(char* msg)
     {
         printf(msg);
         scanf("%s", s);
+        if(strcmp(s, "all") == 0)
+            return Dummy;
         char aux[20];
         char *cts;
         int i;
-        for (i = 0; i <= 5; i++) {
+        for(i = 0; i <= 5; i++)
+        {
             cts = continentToString(i, aux);
             if (strcmp(s, cts) == 0)
                 return i;
@@ -119,6 +122,7 @@ Continent readContinent(char* msg)
         printf("Invalid continent!\n");
     }
 }
+
 
 Country readCountry()
 {
@@ -169,7 +173,8 @@ void UIListCountries(Controller* controller)
             {
                 system("cls");
                 Continent cont = readContinent("Continent: ");
-                char* out = ControllerGetContinent(controller, cont);
+                int val = readInteger("Population limit:");
+                char *out = ControllerGetContinent(controller, cont, val);
                 if(out == NULL)
                 {
                     printf("\n\nContinent empty!");
@@ -281,7 +286,7 @@ void UIUpdateCountry(Controller* controller)
                 printf("Emigrant country: ");
                 char ss[20];
                 scanf("%s", ss);
-                Country emi = ControllerCountryFromName(controller, s);
+                Country emi = ControllerCountryFromName(controller, ss);
                 int checkk = ControllerCheckCountry(controller, emi);
                 if(!checkk)
                 {

@@ -35,11 +35,11 @@ char* ControllerSearchCountries(Controller *controller, char subs[])
 }
 
 
-char *ControllerGetContinent(Controller *controller, Continent continent)
+char *ControllerGetContinent(Controller *controller, Continent continent, int val)
 {
 
     int i, len = 0;
-    DynamicArray *c = RepoGetContinent(controller->countryRepo, continent);
+    DynamicArray *c = RepoGetContinent(controller->countryRepo, continent, val);
     if(c == NULL)
         return NULL;
     len = getLength(c);

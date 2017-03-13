@@ -48,7 +48,7 @@ DynamicArray *RepoSearchCountry(Repo *repo, char *subs);
 
 
 //Get items by continent
-DynamicArray *RepoGetContinent(Repo *repo, Continent continent);
+DynamicArray *RepoGetContinent(Repo *repo, Continent continent, int val);
 
 
 //Getter for repo capacity
